@@ -109,7 +109,12 @@ const LoginPage = () => {
       <Box className='content-center'>
         <Card sx={{ zIndex: 1 }}>
           <CardContent sx={{ padding: theme => `${theme.spacing(12, 9, 7)} !important` }}>
-            <Box sx={{ mb: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Box sx={{ mb: 6,display: 'flex', alignItems: 'center', justifyContent: 'center'  }}>
+              <img src="/images/logo.png" alt="" className='' style={{
+                width:'30%'
+              }}/>
+            </Box>
+            {/* <Box sx={{ mb: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Typography
                 variant='h6'
                 sx={{
@@ -122,10 +127,10 @@ const LoginPage = () => {
               >
                 {themeConfig.templateName}
               </Typography>
-            </Box>
+            </Box> */}
             <Box sx={{ mb: 6 }}>
               <Typography variant='h5' sx={{ fontWeight: 600, marginBottom: 1.5 }}>
-                Welcome to {themeConfig.templateName}! 👋🏻
+                Welcome to {themeConfig.templateName}!
               </Typography>
               <Typography variant='body2'>Please sign-in to your account and start the adventure</Typography>
             </Box>
@@ -188,7 +193,7 @@ const LoginPage = () => {
               </Button>
               
             </form>
-            <button onClick={onClick}> Click Me</button>
+            {/* <button onClick={onClick}> Click Me</button> */}
           </CardContent>
         </Card>
         <FooterIllustrationsV1 />
