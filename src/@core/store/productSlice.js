@@ -1,13 +1,13 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 
-import { getProducts, getCategories, createProducts } from '../hooks/service'
+import { getProducts, getCategories, createProducts, uploadCSV } from '../hooks/service'
 
 // import useUserStore from './userStore'
 
 // const token = useUserStore((state)=> state.user)
 
-const useProductsSlice = create(
+export const useProductsSlice = create(
     ( set , get )=>({
         products:[],
         edit:false,
@@ -50,8 +50,15 @@ const useProductsSlice = create(
                 //     set( state => ({ ...state, teams: res.data.data}))
                 // }
             })
+        },
+        uploadProductCsv(data){
+            uploadCSV(data).then((res)=>{
+                if(res.data.status == "success"){
+
+                }
+            })
         }
     })
 )
 
-export default useProductsSlice;
+// export default useProductsSlice;

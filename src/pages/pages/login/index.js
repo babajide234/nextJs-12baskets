@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -8,7 +8,6 @@ import { useRouter } from 'next/router'
 // ** MUI Components
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
 import Checkbox from '@mui/material/Checkbox'
 import TextField from '@mui/material/TextField'
 import InputLabel from '@mui/material/InputLabel'
@@ -24,10 +23,6 @@ import MuiFormControlLabel from '@mui/material/FormControlLabel'
 import CircularProgress from '@mui/material/CircularProgress';
 
 // ** Icons Imports
-import Google from 'mdi-material-ui/Google'
-import Github from 'mdi-material-ui/Github'
-import Twitter from 'mdi-material-ui/Twitter'
-import Facebook from 'mdi-material-ui/Facebook'
 import EyeOutline from 'mdi-material-ui/EyeOutline'
 import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 
@@ -36,12 +31,16 @@ import themeConfig from 'src/configs/themeConfig'
 
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
+import AuthLayouts from 'src/layouts/AuthLayouts'
 
 // ** Demo Imports
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
 import UnAuthContent from 'src/@core/components/UnAuthContent'
 
-import useUserStore from 'src/@core/store/userStore'
+import {useUserStore} from 'src/@core/store/userStore'
+import { ToastContainer, toast } from 'react-toastify'
+import { useBoundStore } from 'src/@core/store/useBoundStore'
+import { AlertStore } from 'src/@core/store/alertSlice'
 
 // ** Styled Components
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -65,6 +64,11 @@ const LoginPage = () => {
   const login = useUserStore((state)=> state.login)
   const loading = useUserStore((state)=> state.loading)
 
+  const setMessage = AlertStore((state)=> state.setMessage)
+  const setStatus = AlertStore((state)=> state.setStatus)                      
+  const setType = AlertStore((state)=> state.setType)
+  
+  
   // ** State
   const [values, setValues] = useState({
     email:'',
@@ -92,6 +96,12 @@ const LoginPage = () => {
       e.preventDefault();
       console.log("details",values);
       login(values.email,values.password);
+  }
+
+  const onClick = () => {
+    setMessage('message2');
+    setStatus(true);
+    setType('error');
   }
 
   return (
@@ -178,6 +188,7 @@ const LoginPage = () => {
               </Button>
               
             </form>
+            <button onClick={onClick}> Click Me</button>
           </CardContent>
         </Card>
         <FooterIllustrationsV1 />
@@ -185,6 +196,8 @@ const LoginPage = () => {
     </UnAuthContent>
   )
 }
+
 LoginPage.getLayout = page => <BlankLayout>{page}</BlankLayout>
+
 
 export default LoginPage

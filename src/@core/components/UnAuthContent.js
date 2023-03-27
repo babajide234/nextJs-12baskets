@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 
-import useUserStore from "../store/userStore";
+import {useUserStore} from "../store/userStore";
 
 export default function UnAuthContent({ children }) {
   const router = useRouter();

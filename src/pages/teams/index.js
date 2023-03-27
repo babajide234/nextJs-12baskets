@@ -15,19 +15,21 @@ import TeamsTable from 'src/views/teams/TeamsTable';
 import TeamEditForm from 'src/views/teams/TeamEditForm';
 import TeamAddForm from 'src/views/teams/TeamAddForm';
 
-import useTeamSlice from 'src/@core/store/teamStore';
-import useUserStore from 'src/@core/store/userStore';
+import {useTeamSlice} from 'src/@core/store/teamStore';
+import {useUserStore} from 'src/@core/store/userStore';
 
 const Teams = (params) => {
     
     // const [open, setOpen]= useState(false);
 
     const token = useUserStore((state)=> state.user)
-    const getTeams = useTeamSlice((state)=> state.setTeams)
+    const setTeams = useTeamSlice((state)=> state.setTeams)
     const edit = useTeamSlice((state)=> state.edit);
     const add = useTeamSlice((state)=> state.add);
     const setEdit = useTeamSlice((state)=> state.setEdit);
     const setAdd = useTeamSlice((state)=> state.setAdd);
+
+
 
     const style = {
         position:"absolute",
@@ -47,15 +49,17 @@ const Teams = (params) => {
     }
     
     useEffect(() => {
-        const data ={
-            token: token,
-            id: "",
-            active: "",
-            email: ""
-        }
-        getTeams(data);
-    }, [token,getTeams])
     
+        const data = {
+            token: token,
+            email: "",
+            role:""
+        }
+        
+        setTeams(data);
+
+    }, [token,setTeams])
+
     const handleClose = () =>{
         if( add ){
             setAdd(!add)
@@ -76,6 +80,7 @@ const Teams = (params) => {
             <Grid item xs={12}>
                 <Card>
                     <CardHeader title='Teams Table' titleTypographyProps={{ variant: 'h6' }} />
+
                     <TeamsTable/>
 
                     <Modal

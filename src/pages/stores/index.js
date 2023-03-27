@@ -11,16 +11,18 @@ import {
 } from '@mui/material/'
 import Button from '@mui/material/Button';
 
-import useStoreSlice from 'src/@core/store/storeSlice';
-import useUserStore from 'src/@core/store/userStore';
+import { useStoreSlice } from 'src/@core/store/storeSlice';
+import { useUserStore } from 'src/@core/store/userStore';
 import AddStoresForm from 'src/views/stores/AddStoresForm';
 import StoresTable from 'src/views/stores/StoreTable';
+import EditStoreForm from 'src/views/stores/EditStoreForm';
 
 const Stores = () => {
     const token = useUserStore((state)=> state.user)
     const add = useStoreSlice((state)=> state.add )
     const edit = useStoreSlice((state)=> state.edit )
     const setAdd = useStoreSlice((state)=> state.setAdd )
+    const setEdit = useStoreSlice((state)=> state.setEdit )
     const setStore = useStoreSlice((state)=> state.setStore )
 
     const style = {
@@ -73,8 +75,9 @@ const Stores = () => {
             <Grid item xs={12}>
                 <Card>
                     <CardHeader title='Stores Table' titleTypographyProps={{ variant: 'h6' }} />
+
                     <StoresTable/>
-                    
+
                     <Modal
                         className={''}
                         open={add}
@@ -82,6 +85,15 @@ const Stores = () => {
                     >
                         <Box sx={style}>
                             <AddStoresForm/>
+                        </Box>
+                    </Modal>
+                    <Modal
+                        className={''}
+                        open={edit}
+                        onClose={handleClose}
+                    >
+                        <Box sx={style}>
+                            <EditStoreForm/>
                         </Box>
                     </Modal>
                 </Card>

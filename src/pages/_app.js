@@ -1,3 +1,5 @@
+import React, { useEffect } from 'react'
+
 // ** Next Imports
 import Head from 'next/head'
 import { Router } from 'next/router'
@@ -26,6 +28,11 @@ import 'react-perfect-scrollbar/dist/css/styles.css'
 
 // ** Global css styles
 import '../../styles/globals.css'
+import 'react-toastify/dist/ReactToastify.css';
+
+// ** Toast container
+import { toast, ToastContainer } from 'react-toastify';
+import { AlertStore } from 'src/@core/store/alertSlice'
 
 const clientSideEmotionCache = createEmotionCache()
 
@@ -42,19 +49,28 @@ if (themeConfig.routingLoader) {
   })
 }
 
-// import { QueryClient, QueryClientProvider } from "react-query";
-
-// import { ReactQueryDevtools } from 'react-query/devtools'
-
-// const queryClient = new QueryClient()
-
-
 // ** Configure JSS & ClassName
 const App = props => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
 
   // Variables
   const getLayout = Component.getLayout ?? (page => <UserLayout>{page}</UserLayout>)
+
+  const message = AlertStore((state)=>state.message)
+  const messageStatus = AlertStore((state)=>state.messageStatus)
+  const messageType = AlertStore((state)=>state.messageType)
+  const setMessage = AlertStore((state)=> state.setMessage)
+  const setStatus = AlertStore((state)=> state.setStatus)                      
+  const setType = AlertStore((state)=> state.setType)
+
+
+
+  useEffect(() => {
+    if(messageStatus){
+      toast( message, { type: messageType })
+      setStatus(false);
+    }
+  }, [messageStatus, message,messageType])
 
   return (
 
@@ -72,7 +88,12 @@ const App = props => {
       <SettingsProvider>
         <SettingsConsumer>
             {({ settings }) => {
-              return <ThemeComponent settings={settings}>{getLayout(<Component {...pageProps} />)}</ThemeComponent>
+              return (
+                <ThemeComponent settings={settings}>
+                  {getLayout(<Component {...pageProps} />)}
+                  <ToastContainer/>
+                </ThemeComponent>
+              )
             }}
         </SettingsConsumer>
       </SettingsProvider>

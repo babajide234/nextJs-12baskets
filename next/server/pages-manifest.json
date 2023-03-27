@@ -1,0 +1,19 @@
+{
+  "/401": "pages/401.html",
+  "/404": "pages/404.html",
+  "/500": "pages/500.html",
+  "/_app": "pages/_app.js",
+  "/_document": "pages/_document.js",
+  "/account-settings": "pages/account-settings.html",
+  "/icons": "pages/icons.html",
+  "/": "pages/index.html",
+  "/order": "pages/order.html",
+  "/pages/error": "pages/pages/error.html",
+  "/pages/login": "pages/pages/login.html",
+  "/pages/register": "pages/pages/register.html",
+  "/products": "pages/products.html",
+  "/riders": "pages/riders.html",
+  "/stores": "pages/stores.html",
+  "/teams": "pages/teams.html",
+  "/_error": "pages/_error.js"
+}

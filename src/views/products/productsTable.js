@@ -16,12 +16,14 @@ import Chip from '@mui/material/Chip';
 
 // import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DotsVertical  from 'mdi-material-ui/DotsVertical'
-import useStoreSlice from 'src/@core/store/storeSlice'
-import useProductsSlice from 'src/@core/store/productSlice'
+
+import {useStoreSlice} from 'src/@core/store/storeSlice'
+import {useProductsSlice} from 'src/@core/store/productSlice'
+
 import { Box, Typography, Grid } from '@mui/material'
 
-const createData = (id, name, description, city, area, address ) => {
-    return { id, name, description, city, area, address }
+const createData = (id, name, quantity, amount, category, details, store ) => {
+    return { id, name, quantity, amount, category, details, store}
 }
 
 
@@ -44,12 +46,13 @@ const ProductsTable = () => {
 
     const rows = products?.map((data)=>{
         const row = createData(
-            data.store_id,
+            data.id,
             data.name,
-            data.description,
-            data.city, 
-            data.area, 
-            data.address, 
+            data.quantity,
+            data.amount,
+            data.category_name,
+            data.details,
+            data.store_name, 
         )
 
         return row
@@ -112,10 +115,11 @@ const ProductsTable = () => {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell>Name</TableCell>
-                                        <TableCell align='right'>Description</TableCell>
-                                        <TableCell align='right'>City</TableCell>
-                                        <TableCell align='right'>Area</TableCell>
-                                        <TableCell align='right'>Address</TableCell>
+                                        <TableCell align='right'>Quantity</TableCell>
+                                        <TableCell align='right'>Amount</TableCell>
+                                        <TableCell align='right'>Category</TableCell>
+                                        <TableCell align='right'>Details</TableCell>
+                                        <TableCell align='right'>Store</TableCell> 
                                         <TableCell align='right'>Action</TableCell> 
                                     </TableRow>
                                 </TableHead>
@@ -132,10 +136,11 @@ const ProductsTable = () => {
                                             <TableCell component='th' scope='row'>
                                                 {row.name}
                                             </TableCell>
-                                            <TableCell align='right'>{row.description}</TableCell>
-                                            <TableCell align='right'>{row.city ? row.city : "null"}</TableCell>
-                                            <TableCell align='right'>{row.area ? row.area : "null"}</TableCell>
-                                            <TableCell align='right'>{row.address ? row.address: "null"}</TableCell>
+                                            <TableCell align='right'>{row.quantity}</TableCell>
+                                            <TableCell align='right'>{row.amount ? row.amount : "null"}</TableCell>
+                                            <TableCell align='right'>{row.category ? row.category : "null"}</TableCell>
+                                            <TableCell align='right'>{row.details ? row.details: "null"}</TableCell>
+                                            <TableCell align='right'>{row.store ? row.store: "null"}</TableCell>
                                             <TableCell align='right'>{button(row.id)}</TableCell>
                                         </TableRow>
                                     ))}

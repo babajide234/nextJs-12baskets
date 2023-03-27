@@ -14,11 +14,11 @@ import {
     Chip
 } from '@mui/material/'
 
-import useUserStore from 'src/@core/store/userStore';
-import useStoreSlice from 'src/@core/store/storeSlice';
+import { useUserStore } from 'src/@core/store/userStore';
+import { useStoreSlice } from 'src/@core/store/storeSlice';
 
 import { instance } from 'src/@core/hooks/service';
-import useProductsSlice from 'src/@core/store/productSlice';
+import { useProductsSlice } from 'src/@core/store/productSlice';
 
 const AddProductForm = () => {
 

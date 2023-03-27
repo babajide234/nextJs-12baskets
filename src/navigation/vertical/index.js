@@ -13,48 +13,83 @@ import GoogleCirclesExtended from 'mdi-material-ui/GoogleCirclesExtended'
 import AccountGroup from 'mdi-material-ui/AccountGroup';
 
 // import Groups2OutlinedIcon from '@mui/icons-material/Groups2Outlined';
+const SuperAdminMenu = [
+  {
+    title: 'Dashboard',
+    icon: HomeOutline,
+    path: '/'
+  },
+  {
+    title: 'Account Settings',
+    icon: AccountCogOutline,
+    path: '/account-settings'
+  },
+  {
+    sectionTitle: 'Pages'
+  },    
+  {
+    title: 'Teams',
+    icon: AccountGroup ,
+    path: '/teams'
+  },
+  {
+    title: 'Stores',
+    icon: AccountGroup ,
+    path: '/stores'
+  },
+  {
+    title: 'Orders',
+    icon: AccountGroup ,
+    path: '/order'
+  },
+];
 
-const navigation = () => {
-  return [
-    {
-      title: 'Dashboard',
-      icon: HomeOutline,
-      path: '/'
-    },
-    {
-      title: 'Account Settings',
-      icon: AccountCogOutline,
-      path: '/account-settings'
-    },
-    {
-      sectionTitle: 'Pages'
-    },    
-    {
-      title: 'Teams',
-      icon: AccountGroup ,
-      path: '/teams'
-    },
-    {
-      title: 'Stores',
-      icon: AccountGroup ,
-      path: '/stores'
-    },
-    {
-      title: 'Orders',
-      icon: AccountGroup ,
-      path: '/orders'
-    },
-    {
-      title: 'Products',
-      icon: AccountGroup ,
-      path: '/products'
-    },
-    {
-      title: 'Riders',
-      icon: AccountGroup ,
-      path: '/riders'
-    }
-  ]
+const AdminMenu = [
+  {
+    title: 'Dashboard',
+    icon: HomeOutline,
+    path: '/'
+  },
+  {
+    title: 'Account Settings',
+    icon: AccountCogOutline,
+    path: '/account-settings'
+  },
+  {
+    sectionTitle: 'Pages'
+  },    
+  {
+    title: 'Teams',
+    icon: AccountGroup ,
+    path: '/teams'
+  },
+  {
+    title: 'Stores',
+    icon: AccountGroup ,
+    path: '/stores'
+  },
+  {
+    title: 'Orders',
+    icon: AccountGroup ,
+    path: '/orders'
+  },
+  {
+    title: 'Products',
+    icon: AccountGroup ,
+    path: '/products'
+  },
+  {
+    title: 'Riders',
+    icon: AccountGroup ,
+    path: '/riders'
+  }
+]
+
+export const SuperNavigation = () => {
+  return SuperAdminMenu;
 }
 
-export default navigation
+export const AdminNavigation = () => {
+  return AdminMenu;
+}
+

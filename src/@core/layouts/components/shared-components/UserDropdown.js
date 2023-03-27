@@ -32,7 +32,7 @@ const BadgeContentSpan = styled('span')(({ theme }) => ({
   boxShadow: `0 0 0 2px ${theme.palette.background.paper}`
 }))
 
-import useUserStore from 'src/@core/store/userStore'
+import { useUserStore } from 'src/@core/store/userStore'
 
 const UserDropdown = () => {
   // ** States

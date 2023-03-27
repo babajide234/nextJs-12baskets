@@ -9,7 +9,7 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import VerticalLayout from 'src/@core/layouts/VerticalLayout'
 
 // ** Navigation Imports
-import VerticalNavItems from 'src/navigation/vertical'
+import { SuperNavigation, AdminNavigation} from 'src/navigation/vertical'
 
 // ** Component Import
 import VerticalAppBarContent from './components/vertical/AppBarContent'
@@ -18,37 +18,43 @@ import VerticalAppBarContent from './components/vertical/AppBarContent'
 import { useSettings } from 'src/@core/hooks/useSettings'
 import AuthContent from 'src/@core/components/AuthContent'
 
-import useUserStore from 'src/@core/store/userStore'
+import { useUserStore } from 'src/@core/store/userStore'
+
+// ** Toast container
+import { ToastContainer } from 'react-toastify';
 
 const UserLayout = ({ children }) => {
   // ** Hooks
   const { settings, saveSettings } = useSettings()
 
-  /**
-   *  The below variable will hide the current layout menu at given screen size.
-   *  The menu will be accessible from the Hamburger icon only (Vertical Overlay Menu).
-   *  You can change the screen size from which you want to hide the current layout menu.
-   *  Please refer useMediaQuery() hook: https://mui.com/components/use-media-query/,
-   *  to know more about what values can be passed to this hook.
-   *  ! Do not change this value unless you know what you are doing. It can break the template.
-   */
   const hidden = useMediaQuery(theme => theme.breakpoints.down('lg'))
 
   const details = useUserStore((state)=> state.details )
-  const setDetails = useUserStore((state)=> state.setDetials )
+  
+  const { role } = details;
 
-  useEffect(()=>{
+  const getRole= ()=>{
+
+    if(role?.superAdmin === "Yes"){
+      return SuperNavigation() 
+    }
     
-    setDetails()
+    if(role?.admin === "Yes"){
+      return AdminNavigation() 
+    }
 
-  },[details, setDetails])
+  }
+
+  console.log(details)
 
   return (
     <VerticalLayout
       hidden={hidden}
       settings={settings}
       saveSettings={saveSettings}
-      verticalNavItems={VerticalNavItems()} // Navigation Items
+      verticalNavItems={
+        getRole()
+      } // Navigation Items
       afterVerticalNavMenuContent
       verticalAppBarContent={(
         props // AppBar Content
@@ -64,6 +70,7 @@ const UserLayout = ({ children }) => {
       <AuthContent>
         {children}
       </AuthContent>
+
     </VerticalLayout>
   )
 }

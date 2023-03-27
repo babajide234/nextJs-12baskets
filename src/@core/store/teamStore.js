@@ -7,7 +7,7 @@ import { getTeams,createTeam } from '../hooks/service'
 
 // const token = useUserStore((state)=> state.user)
 
-const useTeamSlice = create(
+export const useTeamSlice = create(
     ( set , get )=>({
         teams:[],
         edit:false,
@@ -42,4 +42,4 @@ const useTeamSlice = create(
     })
 )
 
-export default useTeamSlice;
+// export default useTeamSlice;

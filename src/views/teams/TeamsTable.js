@@ -12,7 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import Chip from '@mui/material/Chip';
 
-import useTeamSlice from 'src/@core/store/teamStore'
+import {useTeamSlice} from 'src/@core/store/teamStore'
 
 // import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DotsVertical  from 'mdi-material-ui/DotsVertical'
@@ -40,7 +40,7 @@ const TeamsTable = () => {
     const teams = useTeamSlice(state => state.teams);
     const setEdit = useTeamSlice((state)=> state.setEdit);
 
-    const rows = teams.map((data)=>{
+    const rows = teams?.map((data)=>{
         const row = createData(
             data.team_id,
             data.fullname,
@@ -99,17 +99,17 @@ const TeamsTable = () => {
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label='simple table'>
                 <TableHead>
-                <TableRow>
-                    <TableCell>Name</TableCell>
-                    <TableCell align='right'>Email</TableCell>
-                    <TableCell align='right'>Role</TableCell>
-                    <TableCell align='right'>Rate</TableCell>
-                    <TableCell align='right'>Capped</TableCell>
-                    <TableCell align='right'>Action</TableCell> 
-                </TableRow>
+                    <TableRow>
+                        <TableCell>Name</TableCell>
+                        <TableCell align='right'>Email</TableCell>
+                        <TableCell align='right'>Role</TableCell>
+                        <TableCell align='right'>Rate</TableCell>
+                        <TableCell align='right'>Capped</TableCell>
+                        <TableCell align='right'>Action</TableCell> 
+                    </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows.map(row => (
+                    {rows && rows.map(row => (
                         <TableRow
                         key={row.id}
                         sx={{

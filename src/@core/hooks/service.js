@@ -32,9 +32,8 @@ export function getTeams(data){
 
     const postData = {
         token: data.token,
-        store_id: data.id,
-        active: data.active,
-        email: data.email
+        email: data.email,
+        role: data.role
     }
 
     return instance.post('panel/teams', postData);
@@ -44,14 +43,12 @@ export function createTeam(data){
 
     const postData = {
         token: data.token,
+        store_id:data.store_id,
         email: data.email,
-        role: data.role, 
-        type: data.type,
-        rate: data.rate,
-        capped: data.capped
+        role: data.role
     }
 
-    return instance.post('panel/add-teams', postData);
+    return instance.post('store/add-teams', postData);
 }
 
 export function getStores(data){
@@ -68,6 +65,33 @@ export function getStores(data){
     return instance.post('store/list', postData);
 }
 
+export function getOrders(data){
+
+    const postData = {
+        token: data.token,
+        reference_code: data.reference_code,
+        account: data.account, //enum: customer or rider or store
+        from:data.from,
+        to: data.to,
+        payment_status: data.payment_status, //enum: Successful or Pending or Failed
+        order_status: data.order_status //enum: Successful or Pending or Failed
+    }
+
+    return instance.post('order/details', postData);
+}
+
+export function assign(data){
+
+    const postData = {
+        token: data.token,
+        email: data.email, 
+        store_id: data.store_id,
+        reference_code: data.reference_code,
+    }
+
+    return instance.post('order/attach-rider', postData);
+}
+
 export function createStore(data){
 
     const postData = {
@@ -79,6 +103,20 @@ export function createStore(data){
     }
 
     return instance.post('store/create', postData);
+}
+
+export function editStore(data){
+
+    const postData = {
+        token: data.token,
+        store_id:data.store_id,
+        name: data.name,
+        address: data.address,
+        description: data.description,
+        logo: data.photo
+    }
+
+    return instance.post('store/update-account', postData);
 }
 
 export function getProducts(data){
@@ -148,3 +186,20 @@ export function getSubCategories(data){
     return instance.post('misc/sub-category',postData)
 }
 
+export function upload(data){
+
+    return instance.post("misc/file-upload", data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+}
+
+export function uploadCSV(data){
+
+    return instance.post("misc/file-upload", data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+}

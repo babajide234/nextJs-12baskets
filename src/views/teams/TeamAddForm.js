@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { 
     Grid,
     TextField,
@@ -9,21 +9,37 @@ import {
     Typography,
     Button
 } from '@mui/material/'
-import useTeamSlice from 'src/@core/store/teamStore';
-import useUserStore from 'src/@core/store/userStore';
+import {useTeamSlice} from 'src/@core/store/teamStore';
+import {useUserStore} from 'src/@core/store/userStore';
+import { useStoreSlice } from 'src/@core/store/storeSlice';
 
 const TeamAddForm = () => {
     const addTeam = useTeamSlice( (state)=> state.addTeam);
     const token  = useUserStore( (state) => state.user)
+    const setStore = useStoreSlice((state)=> state.setStore )
+    const stores = useStoreSlice(state => state.stores);
+
+    useEffect(() => {
+        const data ={
+            token: token,
+            store_id: "",
+            location: "",
+            store: "",
+            page: "",
+            limit: ""
+        }
+        setStore(data);
+    }, [token,setStore])
+
+    useEffect(() => {
+        console.log(stores)
+    }, [stores])
 
     // const setAdd = useTeamSlice((state)=> state.setAdd);
 
-
     const [ email, setEmail ] = useState('');
     const [ role, setRole ] = useState('');
-    const [ type, setType ] = useState('');
-    const [ rate, setRate ] = useState('');
-    const [ capped, setCapped ] = useState('');
+    const [ store_id, setStoreId ] = useState('');
 
     const check = (value) =>{
 
@@ -43,11 +59,9 @@ const TeamAddForm = () => {
 
         const data = {
             token,
+            store_id,
             email,
             role,
-            type,
-            rate,
-            capped
         }
 
         addTeam(data)
@@ -71,27 +85,19 @@ const TeamAddForm = () => {
                         </Select>
                     </FormControl>
                 </Grid>
-                {
-                    role == 'rider' && (
-                        <>
-                            <Grid item xs={12} sm={12}>
-                                <FormControl fullWidth>
-                                    <InputLabel>Type</InputLabel>
-                                    <Select label='Type' value={type} onChange={(e)=> setType(e.target.value)}  >
-                                        <MenuItem value='admin'>Admin</MenuItem>
-                                        <MenuItem value='rider'>Rider</MenuItem>
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-                            <Grid item xs={12} sm={12}>
-                                <TextField fullWidth label='Rate' value={rate} onChange={(e)=> setRate(e.target.value)} />
-                            </Grid>
-                            <Grid item xs={12} sm={12}>
-                                <TextField fullWidth label='Capped' value={capped} onChange={(e)=> setCapped(e.target.value)} />
-                            </Grid>
-                        </>
-                    )
-                }
+                <Grid item xs={12} sm={12}>
+                    <FormControl fullWidth>
+                        <InputLabel>Store</InputLabel>
+                        <Select label='Store' value={store_id} onChange={(e)=> setStoreId(e.target.value)}  >
+                            {
+                                stores?.map((item)=>(
+                                    <MenuItem key={item.store_id} value={item.store_id}>{item.name}</MenuItem>
+                                ))
+                            }
+                            <MenuItem value='rider'>Rider</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid>
                 <Grid item xs={12} >
                     <Button variant='contained' type='submit' sx={{ float:"right"}}>
                        Save
