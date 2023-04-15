@@ -70,7 +70,7 @@ const App = props => {
       toast( message, { type: messageType })
       setStatus(false);
     }
-  }, [messageStatus, message,messageType])
+  }, [messageStatus, message,messageType,setStatus])
 
   return (
 

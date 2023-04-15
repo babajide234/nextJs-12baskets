@@ -9,7 +9,7 @@ import { useUserStore } from './userStore';
 
 export const useStoreSlice = create(
     ( set , get )=>({
-        stores:[],
+        stores:null,
         edit:false,
         add:false,
         loading:false,
@@ -35,25 +35,30 @@ export const useStoreSlice = create(
         },
         addStore(data){
             set( state => ({ ...state, loading: true}))
-            createStore(data).then( (res) => {
+            createStore(data)
+                .then( (res) => {
                 console.log(res)
-                
                 if(res.data.status == 'success'){
-                    set( state => ({ ...state, loading: false}))
-                    set( state => ({ ...state, add: false}))
                     
                     AlertStore.getState().setMessage(res.data.message);
                     AlertStore.getState().setStatus(true);
                     AlertStore.getState().setType('success');
                     get().refecthStore();
                 }else {
-                    set( state => ({ ...state, loading: false}))
                     set( state => ({ ...state, add: false}))
                     
                     AlertStore.getState().setMessage(res.data.message);
                     AlertStore.getState().setStatus(true);
                     AlertStore.getState().setType('error');
                 }
+            })
+            .catch((err)=>{
+                console.log(err)
+            })
+            .finally(()=>{
+                set( state => ({ ...state, loading: false}))
+                set( state => ({ ...state, add: false}))
+
             })
         },
         editStore(data){
@@ -62,19 +67,22 @@ export const useStoreSlice = create(
                 console.log(res)
                 
                 if(res.data.status == 'success'){
-                    set( state => ({ ...state, edit: false}))
-                    set( state => ({ ...state, loading: false}))
                     
                     AlertStore.getState().setMessage(res.data.message);
                     AlertStore.getState().setStatus(true);
                     AlertStore.getState().setType('success');
                     get().refecthStore();
                 }else {
-                    set( state => ({ ...state, loading: false}))
                     AlertStore.getState().setMessage(res.data.message);
                     AlertStore.getState().setStatus(true);
                     AlertStore.getState().setType('error');
                 }
+            })
+            .catch((err)=>{
+                console.log(err)
+            })
+            .finally(()=>{
+                set( state => ({ ...state, loading: false}))
             })
         },
         refecthStore(){
@@ -82,6 +90,8 @@ export const useStoreSlice = create(
                 token: useUserStore.getState().user
             }
             get().setStore(data);
+            get().setEdit(false);
+            get().setAdd(false);
         }
     })
 )

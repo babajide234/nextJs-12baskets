@@ -6,7 +6,7 @@ import { useUserStore } from '../store/userStore';
 import { uploadStore } from '../store/uploadSlice';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
-function FileUploader() {
+function FileUploader({  }) {
 
     const [currentFile, setCurrentFile] = useState(null);
     const [uploadProgress, setUploadProgress] = useState(0);

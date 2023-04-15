@@ -10,7 +10,7 @@ export const instance = axios.create({
     baseURL:base_URL
 });
 
- 
+
 export function login(email, passcode) {
     const postData = {
         email,
@@ -20,12 +20,24 @@ export function login(email, passcode) {
     return instance.post('account/login',postData)
 }
 
+export function logout(data) {
+    return instance.post('account/logout',data)
+}
+
 export function details (token) {
     const postData = {
         token : token
     }
     
-return instance.post('panel/details',postData);
+return instance.post('account/details',postData);
+}
+
+export function metrics (token) {
+    const postData = {
+        token : token
+    }
+    
+return instance.post('store/metrics',postData);
 }
 
 export function getTeams(data){
@@ -33,10 +45,27 @@ export function getTeams(data){
     const postData = {
         token: data.token,
         email: data.email,
-        role: data.role
+        role: data.role,
+    }
+    const url = data.type == "Admin" ? '/store/teams' : 'panel/teams';
+
+    return instance.post(url, postData);
+}
+
+export function getBanks(data){
+
+    return instance.post('wallet/banks', data);
+}
+
+export function getCustomers(data){
+
+    const postData = {
+        token: data.token,
+        active: "Yes", //enum: Yes, No
+        email: data.email
     }
 
-    return instance.post('panel/teams', postData);
+    return instance.post('panel/customers', postData);
 }
 
 export function createTeam(data){
@@ -49,6 +78,10 @@ export function createTeam(data){
     }
 
     return instance.post('store/add-teams', postData);
+}
+
+export function editTeam(data){
+    return instance.post('store/update-team', data);
 }
 
 export function getStores(data){
@@ -80,6 +113,45 @@ export function getOrders(data){
     return instance.post('order/details', postData);
 }
 
+export function singleOrder(data){
+
+    const postData = {
+        token: data.token,
+        reference_code: data.reference_code,
+        account: data.account, 
+        from:data.from,
+        to: data.to,
+        payment_status: data.payment_status, 
+        order_status: data.order_status 
+    }
+
+    return instance.post('order/details', postData);
+}
+
+// account update
+export function updateprofile(data){
+    return instance.post('account/update-profile', data);
+
+}
+
+export function updateValidId(data){
+    return instance.post('account/upload-valid-license', data);
+
+}
+
+export function updateBank(data){
+    return instance.post('account/update-bank-details', data);
+
+}
+
+export function updateNextOfKin(data){
+    return instance.post('account/update-nok', data);
+}
+
+export function updateNextOfKinId(data){
+    return instance.post('account/upload-nok-valid-license', data);
+}
+
 export function assign(data){
 
     const postData = {
@@ -90,6 +162,11 @@ export function assign(data){
     }
 
     return instance.post('order/attach-rider', postData);
+}
+
+export function createOrder(data){
+
+    return instance.post('order/create', data);
 }
 
 export function createStore(data){
@@ -158,13 +235,43 @@ export function createProducts(data){
     return instance.post('store/add-product',postData);
 }
 
-export function fileUpload(data){
+export function editProducts(data){
+    const postData = {
+        token: data.token,
+        store_id: data.store_id,
+        id: data.id,
+        name: data.name,
+        quantity: data.quantity,
+        amount: data.amount,
+        details: data.details,
+        weight: data.weight,
+        category_id: data.category_id,
+        sub_category_id: data.sub_category_id,
+        main_photo: data.main_photo,
+        photo_a: data.photo_a,
+        photo_b: data.photo_b,
+        photo_c: data.photo_c,
+        photo_d: data.photo_d,
+        photo_e: data.photo_e,
+        active: data.active
+    };
+
+    return instance.post('store/update-product',postData);
+}
+
+export function profileUpdate(data){
     
-    const postData ={
+    return instance.post('account/update-profile',data)
+}
 
-    }
+export function uploadPic(data){
+    
+    return instance.post('account/upload-photo',data)
+}
 
-    return instance.post('misc/category',postData)
+export function updatePwd(data){
+    
+    return instance.post('account/change-password',data)
 }
 
 export function getCategories(data){
@@ -174,17 +281,24 @@ export function getCategories(data){
         category_id: data.category_id
     }
 
-    return instance.post('misc/category',postData)
+    return instance.post('store/category',postData)
 }
 
 export function getSubCategories(data){
 
-    const postData ={
-
-    }
-
-    return instance.post('misc/sub-category',postData)
+    return instance.post('store/sub-category',data)
 }
+
+export function location(data){
+
+    return instance.post('rider/get-location',data)
+}
+
+export function recover(data){
+
+    return instance.post('account/recover-account',data)
+}
+
 
 export function upload(data){
 
@@ -202,4 +316,19 @@ export function uploadCSV(data){
         "Content-Type": "multipart/form-data",
       },
     });
+}
+
+export function getLog(data){
+
+    return instance.post("/logistics/list", data);
+}
+
+export function addLog(data){
+
+    return instance.post("/logistics/add", data);
+}
+
+export function updateLog(data){
+
+    return instance.post("/logistics/update", data);
 }

@@ -1,16 +1,22 @@
 import { useState,useEffect } from 'react';
 import { 
     Grid,
-    Link,
-    Card,
+    TextField,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
     Typography,
+    Button,
+    OutlinedInput,
+    InputAdornment,
+    Input,
+    Card,
     CardHeader,
-    Modal,
     Box,
-    Paper,
+    Modal
 } from '@mui/material/'
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 
 
@@ -22,6 +28,9 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import ClearIcon from '@mui/icons-material/Clear';
 import { AlertStore } from 'src/@core/store/alertSlice';
 import { instance } from 'src/@core/hooks/service';
+import { useStoreSlice } from 'src/@core/store/storeSlice';
+import EditProductForm from 'src/views/products/EditProductForm';
+
 
 
 
@@ -32,8 +41,11 @@ const Products = () => {
     const add = useProductsSlice((state)=> state.add )
     const edit = useProductsSlice((state)=> state.edit )
     const setAdd = useProductsSlice((state)=> state.setAdd )
+    const setEdit = useProductsSlice((state)=> state.setEdit )
     const setProducts = useProductsSlice((state)=> state.setProducts )
     const uploadProductCsv = useProductsSlice((state)=> state.uploadProductCsv )
+    const stores = useStoreSlice( (state)=> state.stores);
+    const setStore = useStoreSlice( (state)=> state.setStore);
 
     const setMessage = AlertStore((state)=> state.setMessage )
     const setStatus = AlertStore((state)=> state.setStatus )
@@ -42,22 +54,50 @@ const Products = () => {
     const [uploadStatus, setUploadStatus] = useState(null);
     const [currentFile, setCurrentFile] = useState(null);
     const [uploadProgress, setUploadProgress] = useState(0);
+    const [store_id, setStoreId] = useState('');
 
     const style = {
-        position:"absolute",
-        top:"50%",
-        left:"50%",
-        transform: "translate(-50%,-50%)",
-        width:600,
-        minHeight:100,
         display:"flex",
         flexDirection:"column",
         justifyContent:"center",
         alignItems:"center",
         backgroundColor:"#fff",
         borderRadius: "10px",
-        paddingBlock: 20,
-        paddingInline: 20
+        paddingTop: 20,
+        marginBottom:20
+    }
+
+    const Boxstyle = {
+        position:"absolute",
+        top:"50%",
+        left:"50%",
+        transform: "translate(-50%,-50%)",
+        width:600,
+        height:"80vh",
+        display:"flex",
+        flexDirection:"column",
+        justifyContent:"center",
+        alignItems:"center",
+        backgroundColor:"#fff",
+        borderRadius: "10px",
+        paddingTop: 45,
+        paddingInline: 15,
+        overflowY:"auto",
+        msOverflowStyle: 'none',
+        '&::-webkit-scrollbar': {
+            width: '8px', 
+        },
+        '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#640501', 
+            borderRadius: '4px', 
+        },
+        '&::-webkit-scrollbar-thumb:hover': {
+            backgroundColor: 'rgba(255, 255, 255, 0.4)', 
+        },
+        '&::-webkit-scrollbar-track': {
+            backgroundColor: '#fff', 
+            borderRadius: '4px', 
+        }
     }
 
     useEffect(() => {
@@ -75,6 +115,17 @@ const Products = () => {
         setProducts(data);
     }, [token,setProducts])
 
+    useEffect(() => {
+        setStore({
+            token,
+            store_id: "",
+            location: "",
+            store: "",
+            page: "",
+            limit: ""
+        })
+    }, [token,setStore])
+
     const handleClose = () =>{
         if( add ){
             setAdd(!add)
@@ -83,7 +134,6 @@ const Products = () => {
             setEdit(!edit);
         }
     }
-
 
     const handleFileSelect = (event) => {
       setCurrentFile(event.target.files[0]);
@@ -108,15 +158,15 @@ const Products = () => {
           console.log(response);
           
           if(response.data.status == "success"){
-              
-            const res = await instance.post('store/upload-products',{
+            
+            setUploadProgress(0)
+
+            const res = instance.post('store/upload-products',{
                   token:token,
-                  store_id:"",
+                  store_id:store_id,
                   file_url:response.data.file_url
             })
             
-            console.log(response);
-
             if(res.data.status == "success"){
                 setFileUrl(res.data.file_url)
                 setUploadStatus('success');
@@ -134,7 +184,7 @@ const Products = () => {
                     location: "",
                     store: "",
                     orderBy: "",
-                    active: ""
+                    active: "Yes"
                 }
                 setProducts(data);
             }
@@ -157,46 +207,76 @@ const Products = () => {
     
     return (
         <Grid container spacing={6} >
-        <Grid item xs={12} sx={{ display:"flex", justifyContent: "space-between"}}>
-            <Typography variant='h5'>
-                Products
-            </Typography>
-            <Stack spacing={5} direction="row">
-                <Button variant="contained" onClick={ ()=> setAdd(!add) }>Add New Product</Button>
-                <Button variant="contained" component="label" >
-                    Upload Csv
-                    <input hidden onChange={handleFileSelect} multiple type="file" />
+            <Grid item xs={12} sx={{ display:"flex", justifyContent: "space-between"}}>
+                <Typography variant='h5'>
+                    Products
+                </Typography>
+                <Stack spacing={5} direction="row">
+                    <Button variant="contained" onClick={ ()=> setAdd(!add) }>Add New Product</Button>
+                    <Button variant="contained" component="label" >
+                        Upload Csv
+                        <input hidden accept=".csv" onChange={handleFileSelect} multiple type="file" />
+                        {currentFile && (
+                            <Box ml={4}>
+                                <CircularProgress variant="determinate"  size={20} color='inherit' value={uploadProgress} />
+                            </Box>
+                        )}
+                    </Button>
                     {currentFile && (
-                        <Box ml={4}>
-                            <CircularProgress variant="determinate"  size={20} color='inherit' value={uploadProgress} />
-                        </Box>
+                        <>
+                            <Grid item xs={2} sm={2}>
+                                <FormControl fullWidth size='small'>
+                                    <InputLabel id="demo-simple-select-label">Store</InputLabel>
+                                    <Select
+                                        name='store_id'
+                                        value={store_id}
+                                        label="Store"
+                                        onChange={(e)=> setStoreId(e.target.value)}
+                                    >
+                                        {
+                                            stores?.map(item => (
+                                                <MenuItem key={item.store_id} value={item.store_id}>{item.name}</MenuItem>
+                                            ))
+                                        }
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            <Button variant="outlined"  onClick={handleUpload}><UploadFileIcon/></Button>
+                            <Button variant="outlined" color="error" onClick={()=>setCurrentFile(null)}><ClearIcon/></Button>
+                        </>
                     )}
-                </Button>
-                {currentFile && (
-                    <>
-                        <Button variant="outlined"  onClick={handleUpload}><UploadFileIcon/></Button>
-                        <Button variant="outlined" color="error" onClick={()=>setCurrentFile(null)}><ClearIcon/></Button>
-                    </>
-                )}
-            </Stack>
+                </Stack>
+            </Grid>
+            <Grid item xs={12}>
+                <Card>
+                    <CardHeader title='Products Table' titleTypographyProps={{ variant: 'h6' }} />
+                    <ProductsTable/>
+                    
+                    <Modal
+                        className={''}
+                        open={add}
+                        onClose={handleClose}
+                    >
+                        <Box sx={Boxstyle}>
+                            <Box sx={style}>
+                            <AddProductForm/>
+                            </Box>
+                        </Box>
+                    </Modal>
+                    <Modal
+                        className={''}
+                        open={edit}
+                        onClose={handleClose}
+                    >
+                        <Box sx={Boxstyle}>
+                            <Box sx={style}>
+                                <EditProductForm/>
+                            </Box>
+                        </Box>
+                    </Modal>
+                </Card>
+            </Grid>
         </Grid>
-        <Grid item xs={12}>
-            <Card>
-                <CardHeader title='Products Table' titleTypographyProps={{ variant: 'h6' }} />
-                <ProductsTable/>
-                
-                <Modal
-                    className={''}
-                    open={add}
-                    onClose={handleClose}
-                >
-                    <Box sx={style}>
-                       <AddProductForm/>
-                    </Box>
-                </Modal>
-            </Card>
-        </Grid>
-    </Grid>
     );
 }
 

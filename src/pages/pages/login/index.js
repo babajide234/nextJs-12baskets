@@ -63,12 +63,20 @@ const FormControlLabel = styled(MuiFormControlLabel)(({ theme }) => ({
 const LoginPage = () => {
   const login = useUserStore((state)=> state.login)
   const loading = useUserStore((state)=> state.loading)
+  const setPwdStatus = useUserStore((state)=> state.setPwdStatus)
+  const passwordReset = useUserStore((state)=> state.passwordReset)
 
   const setMessage = AlertStore((state)=> state.setMessage)
   const setStatus = AlertStore((state)=> state.setStatus)                      
   const setType = AlertStore((state)=> state.setType)
   
   
+  useEffect(()=>{
+    if(passwordReset){
+      setPwdStatus()
+    }
+  },[passwordReset,setPwdStatus])
+
   // ** State
   const [values, setValues] = useState({
     email:'',
@@ -114,20 +122,7 @@ const LoginPage = () => {
                 width:'30%'
               }}/>
             </Box>
-            {/* <Box sx={{ mb: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Typography
-                variant='h6'
-                sx={{
-                  ml: 3,
-                  lineHeight: 1,
-                  fontWeight: 600,
-                  textTransform: 'uppercase',
-                  fontSize: '1.5rem !important'
-                }}
-              >
-                {themeConfig.templateName}
-              </Typography>
-            </Box> */}
+
             <Box sx={{ mb: 6 }}>
               <Typography variant='h5' sx={{ fontWeight: 600, marginBottom: 1.5 }}>
                 Welcome to {themeConfig.templateName}!
@@ -177,8 +172,8 @@ const LoginPage = () => {
                 }}
               >
                 <FormControlLabel control={<Checkbox />} label='Remember Me' />
-                <Link passHref href='/'>
-                  <LinkStyled onClick={e => e.preventDefault()}>Forgot Password?</LinkStyled>
+                <Link href='/pages/recover' passHref >
+                  <LinkStyled>Forgot Password?</LinkStyled>
                 </Link>
               </Box>
 

@@ -25,7 +25,7 @@ const EditStoreForm = () => {
 
     const file_url = uploadStore(state=> state.file_url)
     
-    const storeData= stores.filter((item) =>  item.store_id == storeId)[0];
+    const storeData= stores?.filter((item) =>  item.store_id == storeId)[0];
 
     const initialValues = {
         store_id: storeId,

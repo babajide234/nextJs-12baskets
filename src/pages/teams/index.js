@@ -1,7 +1,6 @@
-import { useState,useEffect } from 'react';
+import { useState,useEffect,useRef } from 'react';
 import { 
     Grid,
-    Link,
     Card,
     Typography,
     CardHeader,
@@ -10,6 +9,15 @@ import {
     Paper,
 } from '@mui/material/'
 import Button from '@mui/material/Button';
+import Dialog, { DialogProps } from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import CloseIcon from '@mui/icons-material/Close';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
 
 import TeamsTable from 'src/views/teams/TeamsTable';
 import TeamEditForm from 'src/views/teams/TeamEditForm';
@@ -21,6 +29,8 @@ import {useUserStore} from 'src/@core/store/userStore';
 const Teams = (params) => {
     
     // const [open, setOpen]= useState(false);
+    const [scroll, setScroll] = useState('paper');
+    const descriptionElementRef = useRef(null);
 
     const token = useUserStore((state)=> state.user)
     const setTeams = useTeamSlice((state)=> state.setTeams)
@@ -31,21 +41,65 @@ const Teams = (params) => {
 
 
 
+    // const style = {
+    //     position:"absolute",
+    //     top:"50%",
+    //     left:"50%",
+    //     transform: "translate(-50%,-50%)",
+    //     width:600,
+    //     minHeight:100,
+    //     display:"flex",
+    //     flexDirection:"column",
+    //     justifyContent:"center",
+    //     alignItems:"center",
+    //     backgroundColor:"#fff",
+    //     borderRadius: "10px",
+    //     paddingBlock: 20,
+    //     paddingInline: 20
+    // }   
+    
     const style = {
-        position:"absolute",
-        top:"50%",
-        left:"50%",
-        transform: "translate(-50%,-50%)",
-        width:600,
-        minHeight:100,
         display:"flex",
         flexDirection:"column",
         justifyContent:"center",
         alignItems:"center",
         backgroundColor:"#fff",
         borderRadius: "10px",
-        paddingBlock: 20,
-        paddingInline: 20
+        paddingTop: 20,
+        marginBottom:20
+    }
+
+    const Boxstyle = {
+        position:"absolute",
+        top:"50%",
+        left:"50%",
+        transform: "translate(-50%,-50%)",
+        width:600,
+        height:"80vh",
+        display:"flex",
+        flexDirection:"column",
+        justifyContent:"center",
+        alignItems:"center",
+        backgroundColor:"#fff",
+        borderRadius: "10px",
+        paddingTop: 45,
+        paddingInline: 15,
+        overflowY:"auto",
+        msOverflowStyle: 'none',
+        '&::-webkit-scrollbar': {
+            width: '8px', 
+        },
+        '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#640501', 
+            borderRadius: '4px', 
+        },
+        '&::-webkit-scrollbar-thumb:hover': {
+            backgroundColor: 'rgba(255, 255, 255, 0.4)', 
+        },
+        '&::-webkit-scrollbar-track': {
+            backgroundColor: '#fff', 
+            borderRadius: '4px', 
+        }
     }
     
     useEffect(() => {
@@ -53,7 +107,7 @@ const Teams = (params) => {
         const data = {
             token: token,
             email: "",
-            role:""
+            role:"admin"
         }
         
         setTeams(data);
@@ -83,23 +137,48 @@ const Teams = (params) => {
 
                     <TeamsTable/>
 
-                    <Modal
-                        className={''}
+                    <Dialog
+                        fullScreen
                         open={edit}
                         onClose={handleClose}
+                        scroll={scroll}
                     >
-                        <Box sx={style}>
-                            <TeamEditForm/>
-                        </Box>
-                    </Modal>
+                        <AppBar sx={{ position: 'relative' }}>
+                            <Toolbar>
+                                <IconButton
+                                    edge="start"
+                                    color="inherit"
+                                    onClick={handleClose}
+                                    aria-label="close"
+                                >
+                                    <CloseIcon />
+                                </IconButton>
+                            </Toolbar>
+                        </AppBar>
+                        <DialogTitle id="scroll-dialog-title">Edit Team</DialogTitle>
+                        <DialogContent dividers={scroll === 'paper'}>
+                            <DialogContentText
+                                id="scroll-dialog-description"
+                                ref={descriptionElementRef}
+                                tabIndex={-1}
+                            >
+                                <TeamEditForm type='admin'/>
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleClose}>Cancel</Button>
+                        </DialogActions>
+                    </Dialog>
 
                     <Modal
                         className={''}
                         open={add}
                         onClose={handleClose}
                     >
-                        <Box sx={style}>
-                            <TeamAddForm/>
+                        <Box sx={Boxstyle}>
+                            <Box sx={style}>
+                                <TeamAddForm from="admin"/>
+                            </Box>
                         </Box>
                     </Modal>
                 </Card>

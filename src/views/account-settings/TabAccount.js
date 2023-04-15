@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState } from 'react'
+import React, { useState } from 'react';
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -21,6 +21,11 @@ import Button from '@mui/material/Button'
 // ** Icons Imports
 import Close from 'mdi-material-ui/Close'
 import { Formik } from 'formik'
+import { useUserStore } from 'src/@core/store/userStore'
+import { LoadingButton } from '@mui/lab'
+import {  LinearProgress } from "@mui/material";
+import { uploadStore } from 'src/@core/store/uploadSlice';
+import { instance } from 'src/@core/hooks/service'
 
 const ImgStyled = styled('img')(({ theme }) => ({
   width: 120,
@@ -46,9 +51,27 @@ const ResetButtonStyled = styled(Button)(({ theme }) => ({
   }
 }))
 
-const TabAccount = () => {
+
+
+function TabAccount () {
   // ** State
-  const [openAlert, setOpenAlert] = useState(true)
+
+  const token = useUserStore(state => state.user);
+  const details = useUserStore(state => state.details);
+  const loading = useUserStore(state => state.loading);
+  const uploadPic = useUserStore(state => state.uploadPic);
+  const updateProfile = useUserStore(state => state.updateProfile);
+  
+  const file_url = uploadStore(state => state.file_url)
+  const setFileUrl = uploadStore(state => state.setFileUrl)
+
+
+  const [currentFile, setCurrentFile] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadStatus, setUploadStatus] = useState(null);
+
+
+  const [openAlert, setOpenAlert] = useState(false)
   const [imgSrc, setImgSrc] = useState('/images/avatars/1.png')
 
   const onChange = file => {
@@ -61,36 +84,106 @@ const TabAccount = () => {
   }
   
   const initialValues = {
-    store_id: "",
-    name: "",
-    address: "",
-    description: "",
-    photo: ""
+    username: details ? details.username :"",
+    lastname: details ? details.lastname :"",
+    firstname: details ? details.othernames :"",
+    email: details ? details.email :"",
+    phone: details ? details.phone :"",
+  };
+
+
+  const handleFileSelect = (event) => {
+    setCurrentFile(event.target.files[0]);
+  };
+
+  const handleUpload = async () => {
+    
+    const formData = new FormData();
+
+    formData.append('token', token);
+    formData.append('file', currentFile);
+
+
+    try {
+      const response = await instance.post('misc/file-upload', formData, {
+          headers: {
+              "Content-Type": "multipart/form-data",
+          },
+          onUploadProgress: (progressEvent) => {
+              const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+              setUploadProgress(percentCompleted);
+          },
+      });
+      
+      console.log(response);
+
+      if(response.data.status == "success"){
+          setFileUrl(response.data.file_url)
+          setUploadStatus('success');
+          
+        //   const data = {
+        //     token,
+        //     management: "",
+        //     email: details.email,
+        //     file_url: response.data.file_url
+        // }
+        // uploadPic(data);
+
+      }else{
+          setUploadStatus('failed');
+      }
+
+      // Do something with the response data if needed
+
+    } catch (error) {
+      console.error(error);
+      setUploadStatus('failed');
+
+      // Handle error if needed
+    }
   };
 
   const handleSubmit =(values)=>{
-
+    const data ={
+      token,
+      username: values.username,
+      lastname: values.lastname,
+      othernames: values.firstname,
+      email: values.email,
+      phone: values.phone
+      }
+    updateProfile(data)
   }
 
   return (
     <CardContent>
-      <Formik initialValues={initialValues} enableReinitialize={true} onSubmit={handleSubmit}>
-      {({values, handleSubmit,handleChange}) => (
-          <form onSubmit={handleSubmit}>
-            <Grid container spacing={7}>
-              <Grid item xs={12} sx={{ marginTop: 4.8, marginBottom: 3 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <ImgStyled src={imgSrc} alt='Profile Pic' />
-                  <Box>
-                    <ButtonStyled component='label' variant='contained' htmlFor='account-settings-upload-image'>
-                      Upload New Photo
+      <Grid item xs={12} sx={{ marginTop: 4.8, marginBottom: 3 }}>
+                {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <ButtonStyled component='label' htmlFor='account-settings-upload-image'>
+
+                    <ImgStyled src={imgSrc} alt='Profile Pic' />
                       <input
-                        hidden
-                        type='file'
-                        onChange={onChange}
-                        accept='image/png, image/jpeg'
-                        id='account-settings-upload-image'
-                      />
+                          hidden
+                          type='file'
+                          onChange={handleFileSelect}
+                          accept='image/png, image/jpeg'
+                          id='account-settings-upload-image'
+                        />
+                  </ButtonStyled>
+                  <Box>
+                    <ButtonStyled 
+                      variant='contained' 
+                      onClick={handleUpload}
+                      disabled={!currentFile}
+                    >
+                      Upload New Photo
+                      { loading && (
+                        <Box mt={4} sx={{ display: 'flex', alignItems: 'center' }}>
+                          <Box sx={{ width: '100%', mr: 1 }}>
+                            <LinearProgress variant="determinate" value={uploadProgress} />
+                          </Box>
+                        </Box>
+                      )}
                     </ButtonStyled>
                     <ResetButtonStyled color='error' variant='outlined' onClick={() => setImgSrc('/images/avatars/1.png')}>
                       Reset
@@ -99,48 +192,68 @@ const TabAccount = () => {
                       Allowed PNG or JPEG. Max size of 800K.
                     </Typography>
                   </Box>
-                </Box>
-              </Grid>
+                </Box> */}
+      </Grid>
+      <Formik initialValues={initialValues} enableReinitialize={true} onSubmit={handleSubmit}>
+      {({values, handleSubmit,handleChange}) => (
+          <form onSubmit={handleSubmit}>
+            <Grid container spacing={7}>
 
               <Grid item xs={12} sm={6}>
-                <TextField fullWidth label='Username' placeholder='johnDoe' defaultValue='johnDoe' />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField fullWidth label='Name' placeholder='John Doe' defaultValue='John Doe' />
+                <TextField 
+                  fullWidth 
+                  label='Username' 
+                  name='username'
+                  placeholder='johnDoe'
+                  value={values.username}
+                  onChange={handleChange}
+
+                  />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
                   type='email'
-                  label='Email'
-                  placeholder='johnDoe@example.com'
-                  defaultValue='johnDoe@example.com'
+                  label='Email'                  
+                  name='email'
+                  value={values.email}
+                  onChange={handleChange}
+
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <FormControl fullWidth>
-                  <InputLabel>Role</InputLabel>
-                  <Select label='Role' defaultValue='admin'>
-                    <MenuItem value='admin'>Admin</MenuItem>
-                    <MenuItem value='author'>Author</MenuItem>
-                    <MenuItem value='editor'>Editor</MenuItem>
-                    <MenuItem value='maintainer'>Maintainer</MenuItem>
-                    <MenuItem value='subscriber'>Subscriber</MenuItem>
-                  </Select>
-                </FormControl>
+                <TextField 
+                  fullWidth 
+                  label='FirstName' 
+                  name='firstname'
+                  placeholder='First Name'
+                  value={values.firstname}
+                  onChange={handleChange}
+
+                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <FormControl fullWidth>
-                  <InputLabel>Status</InputLabel>
-                  <Select label='Status' defaultValue='active'>
-                    <MenuItem value='active'>Active</MenuItem>
-                    <MenuItem value='inactive'>Inactive</MenuItem>
-                    <MenuItem value='pending'>Pending</MenuItem>
-                  </Select>
-                </FormControl>
+                <TextField 
+                  fullWidth 
+                  label='LastName' 
+                  name='lastname'
+                  placeholder='Last Name'
+                  value={values.lastname}
+                  onChange={handleChange}
+
+                />
               </Grid>
+
               <Grid item xs={12} sm={6}>
-                <TextField fullWidth label='Company' placeholder='ABC Pvt. Ltd.' defaultValue='ABC Pvt. Ltd.' />
+                <TextField 
+                  fullWidth 
+                  label='Phone' 
+                  name='phone'
+                  placeholder='Phone Number' 
+                  value={values.phone}
+                  onChange={handleChange}
+
+                />
               </Grid>
 
               {openAlert ? (
@@ -163,12 +276,9 @@ const TabAccount = () => {
               ) : null}
 
               <Grid item xs={12}>
-                <Button variant='contained' sx={{ marginRight: 3.5 }}>
+                <LoadingButton loading={loading} type='submit' variant='contained' sx={{ marginRight: 3.5 }}>
                   Save Changes
-                </Button>
-                <Button type='reset' variant='outlined' color='secondary'>
-                  Reset
-                </Button>
+                </LoadingButton>
               </Grid>
             </Grid>
           </form>

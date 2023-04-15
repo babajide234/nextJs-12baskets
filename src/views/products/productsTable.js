@@ -20,15 +20,22 @@ import DotsVertical  from 'mdi-material-ui/DotsVertical'
 import {useStoreSlice} from 'src/@core/store/storeSlice'
 import {useProductsSlice} from 'src/@core/store/productSlice'
 
-import { Box, Typography, Grid } from '@mui/material'
+import { Grid, Typography, Box, TablePagination,TextField,Button } from '@mui/material'
+import { useUserStore } from 'src/@core/store/userStore'
 
 const createData = (id, name, quantity, amount, category, details, store ) => {
     return { id, name, quantity, amount, category, details, store}
 }
 
+const rowsPerPageOptions = [5, 10, 25];
+
 
 
 const ProductsTable = () => {
+
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -42,7 +49,11 @@ const ProductsTable = () => {
     };
 
     const products = useProductsSlice((state) => state.products);
+    const setSingleProducts = useProductsSlice((state) => state.setSingleProducts);
     const setEdit = useProductsSlice((state)=> state.setEdit);
+    const clearProduct = useProductsSlice((state)=> state.clearProduct);
+    const setProductId = useProductsSlice((state)=> state.setProductId);
+    const token  = useUserStore( (state) => state.user);
 
     const rows = products?.map((data)=>{
         const row = createData(
@@ -61,9 +72,25 @@ const ProductsTable = () => {
     console.log("rows", rows);
     const ITEM_HEIGHT = 48;
 
-    const handleEdit =(id)=>{
+    const handleEdit = (id)=>{
+        clearProduct()
         console.log(id)
+        setProductId(id);
+
         setEdit(true);
+
+        const data = {
+                token: token,
+                id: id,
+                store_id: "",
+                category_id: "",
+                sub_category_id: "",
+                location: "",
+                store: "",
+                orderBy: "",
+                active: ""
+        }
+        setSingleProducts(data);
     }
     
     const button = (id) =>{
@@ -94,14 +121,37 @@ const ProductsTable = () => {
                     }
                 }}
             >
-                    <MenuItem onClick={() => handleEdit(id)}>Edit</MenuItem>
+                    <MenuItem onClick={()=>handleEdit(id)}>Edit</MenuItem>
             </Menu>
         </>
         )
     }
 
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+      };
+    
+    const handleChangeRowsPerPage = (event) => {
+      setRowsPerPage(parseInt(event.target.value, 10));
+      setPage(0);
+    };
+    
+    const handleSearchChange = (event) => {
+      setSearchQuery(event.target.value);
+      setPage(0);
+    };
+
+    const filteredData = rows?.filter((item) => {
+        return (
+          item.name.toLowerCase().includes(searchQuery.toLowerCase()) 
+        );
+    });
+
     return (
         <TableContainer component={Paper}>
+            <Grid mb={5} mt={5} mx={5} sx={{ display: "flex", justifyContent:"end", alignItems:"center" }}>            
+                <TextField size="small" label="Search" value={searchQuery} onChange={handleSearchChange} />
+            </Grid>
             <Table sx={{ minWidth: 650 }} aria-label='simple table'>
                 {
                     !rows ? (
@@ -124,7 +174,7 @@ const ProductsTable = () => {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {rows && rows.map(row => (
+                                     {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                                         <TableRow
                                             key={row.id}
                                             sx={{
@@ -141,10 +191,23 @@ const ProductsTable = () => {
                                             <TableCell align='right'>{row.category ? row.category : "null"}</TableCell>
                                             <TableCell align='right'>{row.details ? row.details: "null"}</TableCell>
                                             <TableCell align='right'>{row.store ? row.store: "null"}</TableCell>
-                                            <TableCell align='right'>{button(row.id)}</TableCell>
+                                            <TableCell align='right'>{
+                                                    <Button variant="outlined" size="small" onClick={()=>handleEdit(row.id)}>
+                                                        <Typography variant="caption" sx={{ fontSize: '10px' }}>
+                                                            Edit
+                                                        </Typography>
+                                                    </Button>
+                                            }</TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>
+                                <TablePagination
+                                    rowsPerPageOptions={rowsPerPageOptions}
+                                    count={rows.length}
+                                    page={page}
+                                    rowsPerPage={rowsPerPage}
+                                    onPageChange={handleChangePage}
+                                />
                             </>
                         )
                 }

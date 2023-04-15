@@ -42,6 +42,26 @@ const SuperAdminMenu = [
     icon: AccountGroup ,
     path: '/order'
   },
+  {
+    title: 'Products',
+    icon: AccountGroup ,
+    path: '/products'
+  },
+  {
+    title: 'Riders',
+    icon: AccountGroup ,
+    path: '/riders'
+  },
+  {
+    title: 'Customers',
+    icon: AccountGroup ,
+    path: '/customers'
+  },
+  {
+    title: 'Logistics',
+    icon: AccountGroup ,
+    path: '/logistics'
+  }
 ];
 
 const AdminMenu = [
@@ -59,19 +79,9 @@ const AdminMenu = [
     sectionTitle: 'Pages'
   },    
   {
-    title: 'Teams',
-    icon: AccountGroup ,
-    path: '/teams'
-  },
-  {
-    title: 'Stores',
-    icon: AccountGroup ,
-    path: '/stores'
-  },
-  {
     title: 'Orders',
     icon: AccountGroup ,
-    path: '/orders'
+    path: '/order'
   },
   {
     title: 'Products',

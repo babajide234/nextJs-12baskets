@@ -14,29 +14,34 @@ import { useStoreSlice } from 'src/@core/store/storeSlice';
 import { useTeamSlice } from 'src/@core/store/teamStore';
 import { useUserStore } from 'src/@core/store/userStore';
 import { orderSlice } from 'src/@core/store/orderSlice';
+import { LoadingButton } from '@mui/lab';
 
 
 const AssignRider = () => {
     
     const token = useUserStore(state => state.user)
+    const details = useUserStore(state => state.details)
     const stores = useStoreSlice(state => state.stores);
     const setStore = useStoreSlice(state => state.setStore);
     const setTeams = useTeamSlice(state => state.setTeams);
     const teams = useTeamSlice(state => state.teams);
     const storeRef = orderSlice(state => state.storeRef);
     const assignRider = orderSlice(state => state.assignRider);
-    
+    const loading = orderSlice(state => state.loading);
+    const S_id = details.store_id.admin ? details.store_id.admin : '';
+
     useEffect(() => {
     
         const data = {
             token: token,
             email: "",
-            role:"rider"
+            role:"rider",
+            type: details.role.admin == "Yes" ? "Admin" : "SuperAdmin" 
         }
         
         setTeams(data);
 
-    }, [token,setTeams])
+    }, [token, setTeams, details.role.admin])
 
     useEffect(() => {
     
@@ -55,7 +60,7 @@ const AssignRider = () => {
 
     const initialValues = {
         email: "",
-        store_id:"",
+        store_id: S_id ? S_id : "",
         reference_code:""
     };
 
@@ -79,7 +84,7 @@ const AssignRider = () => {
             <form onSubmit={handleSubmit}>
                 <Grid container spacing={7}>
                     <Grid item xs={12} sm={12}>
-                        <Typography variant='h5' sx={{ marginBottom: 2 }}>Add New Store</Typography>
+                        <Typography variant='h5' sx={{ marginBottom: 2 }}>Assign Rider to Order</Typography>
                     </Grid>
                     <Grid item xs={12} sm={12}>
                         <FormControl fullWidth>
@@ -93,20 +98,23 @@ const AssignRider = () => {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={12} sm={12}>
-                        <FormControl fullWidth>
-                            <InputLabel>Store</InputLabel>
-                            <Select label='Store' name='store_id' value={values.store_id} onChange={handleChange}  >
-                                {
-                                    stores?.map((item)=>(
-                                        <MenuItem key={item.store_id} value={item.store_id}>{item.name}</MenuItem>
-                                    ))
-                                }
-                            </Select>
-                        </FormControl>
-                    </Grid>
+                    {
+                        !S_id &&
+                        <Grid item xs={12} sm={12}>
+                            <FormControl fullWidth>
+                                <InputLabel>Store</InputLabel>
+                                <Select label='Store' name='store_id' value={values.store_id} onChange={handleChange}  >
+                                    {
+                                        stores?.map((item)=>(
+                                            <MenuItem key={item.store_id} value={item.store_id}>{item.name}</MenuItem>
+                                        ))
+                                    }
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                    }
                     <Grid item xs={12} >
-                        <Button variant='contained' type='submit' sx={{ float:"right"}}>Assign Rider</Button>
+                        <LoadingButton loading={loading} variant='contained' type='submit' sx={{ float:"right"}}>Assign Rider</LoadingButton>
                     </Grid>
                 </Grid>
             </form>

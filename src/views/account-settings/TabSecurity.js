@@ -20,22 +20,26 @@ import EyeOutline from 'mdi-material-ui/EyeOutline'
 import KeyOutline from 'mdi-material-ui/KeyOutline'
 import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 import LockOpenOutline from 'mdi-material-ui/LockOpenOutline'
+import { useUserStore } from 'src/@core/store/userStore'
+import { toast } from 'react-toastify'
+import { LoadingButton } from '@mui/lab'
+
 
 const TabSecurity = () => {
+  const token = useUserStore(state=> state.user)
+  const updatePwd = useUserStore(state=> state.updatePwd)
+  const loading = useUserStore(state=> state.loading)
+  
   // ** States
   const [values, setValues] = useState({
     newPassword: '',
-    currentPassword: '',
     showNewPassword: false,
     confirmNewPassword: '',
-    showCurrentPassword: false,
     showConfirmNewPassword: false
   })
 
   // Handle Current Password
-  const handleCurrentPasswordChange = prop => event => {
-    setValues({ ...values, [prop]: event.target.value })
-  }
+
 
   const handleClickShowCurrentPassword = () => {
     setValues({ ...values, showCurrentPassword: !values.showCurrentPassword })
@@ -71,13 +75,30 @@ const TabSecurity = () => {
     event.preventDefault()
   }
 
+  const handleSubmit = event => {
+    event.preventDefault()
+    if( values.newPassword == values.confirmNewPassword){
+
+      const data = {
+        token:token,
+        password:values.newPassword
+      }
+
+      updatePwd(data);
+
+    } else {
+      toast.error('Passwords Do not Match')
+    }
+  }
+
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <CardContent sx={{ paddingBottom: 0 }}>
         <Grid container spacing={5}>
           <Grid item xs={12} sm={6}>
             <Grid container spacing={5}>
-              <Grid item xs={12} sx={{ marginTop: 4.75 }}>
+
+              {/* <Grid item xs={12} sx={{ marginTop: 4.75 }}>
                 <FormControl fullWidth>
                   <InputLabel htmlFor='account-settings-current-password'>Current Password</InputLabel>
                   <OutlinedInput
@@ -100,7 +121,7 @@ const TabSecurity = () => {
                     }
                   />
                 </FormControl>
-              </Grid>
+              </Grid> */}
 
               <Grid item xs={12} sx={{ marginTop: 6 }}>
                 <FormControl fullWidth>
@@ -151,6 +172,7 @@ const TabSecurity = () => {
                   />
                 </FormControl>
               </Grid>
+
             </Grid>
           </Grid>
 
@@ -168,12 +190,12 @@ const TabSecurity = () => {
       <Divider sx={{ margin: 0 }} />
 
       <CardContent>
-        <Box sx={{ mt: 1.75, display: 'flex', alignItems: 'center' }}>
+        {/* <Box sx={{ mt: 1.75, display: 'flex', alignItems: 'center' }}>
           <KeyOutline sx={{ marginRight: 3 }} />
           <Typography variant='h6'>Two-factor authentication</Typography>
-        </Box>
+        </Box> */}
 
-        <Box sx={{ mt: 5.75, display: 'flex', justifyContent: 'center' }}>
+        {/* <Box sx={{ mt: 5.75, display: 'flex', justifyContent: 'center' }}>
           <Box
             sx={{
               maxWidth: 368,
@@ -197,20 +219,12 @@ const TabSecurity = () => {
               a password to log in. Learn more.
             </Typography>
           </Box>
-        </Box>
+        </Box> */}
 
         <Box sx={{ mt: 11 }}>
-          <Button variant='contained' sx={{ marginRight: 3.5 }}>
+          <LoadingButton loading={loading} type='submit' variant='contained' sx={{ marginRight: 3.5 }}>
             Save Changes
-          </Button>
-          <Button
-            type='reset'
-            variant='outlined'
-            color='secondary'
-            onClick={() => setValues({ ...values, currentPassword: '', newPassword: '', confirmNewPassword: '' })}
-          >
-            Reset
-          </Button>
+          </LoadingButton>
         </Box>
       </CardContent>
     </form>
