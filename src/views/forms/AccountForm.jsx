@@ -49,9 +49,9 @@ const AccountForm = () => {
         updateBankAcc({
             token,
             management: 'Yes',
-            account_id:userId,
+            account_id:details.email,
             store_id: details.store_id.admin ? details.store_id.admin : '',
-            email: userId,
+            email: details.email,
             bank_code: values.bank_code,
             account_no: values.account_no 
         })

@@ -10,6 +10,7 @@ import {
     Paper,
     Button
 } from '@mui/material/'
+import useSWR from 'swr'
 
 
 import { useTeamSlice } from 'src/@core/store/teamStore';
@@ -42,17 +43,13 @@ const Customers = () => {
         paddingBlock: 20,
         paddingInline: 20
     }
-    
-    useEffect(() => {
-    
-        const data = {
-            token: token,
-            email: "",
-        }
-        
-        setCustomers(data);
+ 
+    const payload = {
+        token: token,
+        email: "",
+    }
 
-    }, [token,setCustomers])
+    const { data, error, isLoading  } = useSWR('/api/log', setCustomers(payload))
 
     const handleClose = () =>{
         if( add ){

@@ -1,16 +1,8 @@
 import { useState,useEffect } from 'react';
 import { 
     Grid,
-    TextField,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
     Typography,
     Button,
-    OutlinedInput,
-    InputAdornment,
-    Input,
     Card,
     CardHeader,
     Box,
@@ -20,20 +12,14 @@ import Stack from '@mui/material/Stack';
 import CircularProgress from '@mui/material/CircularProgress';
 
 
-import {useProductsSlice} from 'src/@core/store/productSlice';
-import {useUserStore} from 'src/@core/store/userStore';
-import ProductsTable from 'src/views/products/productsTable';
-import AddProductForm from 'src/views/products/AddProductForm';
-import UploadFileIcon from '@mui/icons-material/UploadFile';
-import ClearIcon from '@mui/icons-material/Clear';
+import { useUserStore } from 'src/@core/store/userStore';
 import { AlertStore } from 'src/@core/store/alertSlice';
 import { instance } from 'src/@core/hooks/service';
-import { useStoreSlice } from 'src/@core/store/storeSlice';
-import EditProductForm from 'src/views/products/EditProductForm';
-import LogisticsTable from 'src/views/logistics/logisticsTable';
 import { logisticsSlice } from 'src/@core/store/logisticsSlice';
+
 import AddLog from 'src/views/logistics/AddLog';
 import EditLog from 'src/views/logistics/EditLog';
+import LogisticsTable from 'src/views/logistics/logisticsTable';
 
 
 
@@ -107,16 +93,6 @@ const Logistics= () => {
         list(data);
     }, [token,list])
 
-    // useEffect(() => {
-    //     setStore({
-    //         token,
-    //         store_id: "",
-    //         location: "",
-    //         store: "",
-    //         page: "",
-    //         limit: ""
-    //     })
-    // }, [token,setStore])
 
     const handleClose = () =>{
         if( add ){

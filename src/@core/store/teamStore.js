@@ -104,7 +104,7 @@ export const useTeamSlice = create(
             })
             .finally(()=>{
                 set( state => ({ ...state, loading: false}))
-            })
+            }) 
         },
         editTeam(data){
             set( state => ({ ...state, loading: true}))

@@ -274,6 +274,15 @@ export function updatePwd(data){
     return instance.post('account/change-password',data)
 }
 
+export function addCategories(data){
+
+    return instance.post('store/add-category',data)
+}
+
+export function addSubCategories(data){
+    return instance.post('store/add-sub-category',data)
+}
+
 export function getCategories(data){
 
     const postData ={
@@ -285,8 +294,15 @@ export function getCategories(data){
 }
 
 export function getSubCategories(data){
-
     return instance.post('store/sub-category',data)
+}
+
+export function categoryUpdate(data){
+    return instance.post('store/update-category',data)
+}
+
+export function subcategoryUpdate(data){
+    return instance.post('store/update-category',data)
 }
 
 export function location(data){
@@ -331,4 +347,9 @@ export function addLog(data){
 export function updateLog(data){
 
     return instance.post("/logistics/update", data);
+}
+
+export function ativityLog(data){
+
+    return instance.post("/panel/log", data);
 }

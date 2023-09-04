@@ -50,7 +50,7 @@ const AddStoresForm = () => {
                             <TextField fullWidth label='Name' name="name" placeholder='name'  value={values.name} onChange={handleChange} />
                         </Grid>
                         <Grid item xs={12} sm={12}>
-                            <TextField fullWidth label='Contact Details' name="phone" placeholder='Contact Details'  value={values.phone} onChange={handleChange} />
+                            <TextField fullWidth label='Phone Number' name="phone" placeholder='Phone Number'  value={values.phone} onChange={handleChange} />
                         </Grid>
                         <Grid item xs={12} sm={12}>
                             <TextField fullWidth label='Email' placeholder='email' name="email"  value={values.email} onChange={handleChange} />

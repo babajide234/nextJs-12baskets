@@ -25,6 +25,11 @@ const SuperAdminMenu = [
     path: '/account-settings'
   },
   {
+    title: 'Activity Log',
+    icon: AccountGroup ,
+    path: '/activity'
+  },
+  {
     sectionTitle: 'Pages'
   },    
   {
@@ -48,6 +53,11 @@ const SuperAdminMenu = [
     path: '/products'
   },
   {
+    title: 'Product Category',
+    icon: AccountGroup ,
+    path: '/category'
+  },
+  {
     title: 'Riders',
     icon: AccountGroup ,
     path: '/riders'
@@ -62,6 +72,7 @@ const SuperAdminMenu = [
     icon: AccountGroup ,
     path: '/logistics'
   }
+
 ];
 
 const AdminMenu = [

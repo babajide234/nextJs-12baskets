@@ -1,7 +1,17 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 
-import { getProducts, getCategories,getSubCategories, createProducts,editProducts, uploadCSV } from '../hooks/service'
+import { 
+    getProducts, 
+    getCategories,
+    getSubCategories,
+    addCategories,
+    addSubCategories,
+    categoryUpdate,
+    createProducts,
+    editProducts, 
+    uploadCSV 
+} from '../hooks/service'
 
 import { useUserStore } from './userStore'
 import { AlertStore } from './alertSlice';
@@ -13,10 +23,11 @@ export const useProductsSlice = create(
         products:[],
         product:null,
         productID:null,
+        cat_id:null,
         edit:false,
         add:false,
         categories: [],
-        subcategories: [],
+        subcategories: null,
         loading:false,
         setProducts(data){
             getProducts(data).then( (res) => {
@@ -37,6 +48,98 @@ export const useProductsSlice = create(
         clearProduct(){
             set( state => ({ ...state, product:null}))
         },
+        addCategory(data){  
+            set( state => ({ ...state, loading: true}))
+
+            addCategories(data).then( (res) => {
+                if(res.data.status == 'success'){
+                    AlertStore.getState().setMessage(res.data.message);
+                    AlertStore.getState().setStatus(true);
+                    AlertStore.getState().setType('success');
+                    get().setCategories  ()
+                }else{
+                    AlertStore.getState().setMessage(res.data.message);
+                    AlertStore.getState().setStatus(true);
+                    AlertStore.getState().setType('error');
+                }
+            })
+            .catch((err)=>{
+                console.log(err)
+
+            })
+            .finally(()=>{
+                set( state => ({ ...state, loading: false}))
+            })
+        },
+        editCategory(data){  
+            set( state => ({ ...state, loading: true}))
+
+            categoryUpdate(data).then( (res) => {
+                if(res.data.status == 'success'){
+                    AlertStore.getState().setMessage(res.data.message);
+                    AlertStore.getState().setStatus(true);
+                    AlertStore.getState().setType('success');
+                    get().setCategories  ()
+                }else{
+                    AlertStore.getState().setMessage(res.data.message);
+                    AlertStore.getState().setStatus(true);
+                    AlertStore.getState().setType('error');
+                }
+            })
+            .catch((err)=>{
+                console.log(err)
+
+            })
+            .finally(()=>{
+                set( state => ({ ...state, loading: false}))
+            })
+        },
+        addSubCategory(data){  
+            set( state => ({ ...state, loading: true}))
+
+            addSubCategories(data).then( (res) => {
+                if(res.data.status == 'success'){
+                    AlertStore.getState().setMessage(res.data.message);
+                    AlertStore.getState().setStatus(true);
+                    AlertStore.getState().setType('success');
+                    get().setCategories()
+                }else{
+                    AlertStore.getState().setMessage(res.data.message);
+                    AlertStore.getState().setStatus(true);
+                    AlertStore.getState().setType('error');
+                }
+            })
+            .catch((err)=>{
+                console.log(err)
+
+            })
+            .finally(()=>{
+                set( state => ({ ...state, loading: false}))
+            })
+        },
+        editSubCategory(data){  
+            set( state => ({ ...state, loading: true}))
+
+            addSubCategories(data).then( (res) => {
+                if(res.data.status == 'success'){
+                    AlertStore.getState().setMessage(res.data.message);
+                    AlertStore.getState().setStatus(true);
+                    AlertStore.getState().setType('success');
+                    get().setCategories()
+                }else{
+                    AlertStore.getState().setMessage(res.data.message);
+                    AlertStore.getState().setStatus(true);
+                    AlertStore.getState().setType('error');
+                }
+            })
+            .catch((err)=>{
+                console.log(err)
+
+            })
+            .finally(()=>{
+                set( state => ({ ...state, loading: false}))
+            })
+        },
         setCategories(data){
             getCategories(data).then( (res) => {
                 console.log(res)
@@ -50,6 +153,8 @@ export const useProductsSlice = create(
                 console.log(res)
                 if(res.data.status == 'success'){
                     set( state => ({ ...state, subcategories: res.data.data}))
+                }else{
+                    set( state => ({ ...state, subcategories:null}))
                 }
             })
 
@@ -62,6 +167,9 @@ export const useProductsSlice = create(
         },
         setAdd(value){
             set(state => ({ ...state, add: value }))
+        },
+        setCatId(value){
+            set(state => ({ ...state, cat_id: value }))
         },
         addProduct(data){
             set( state => ({ ...state, loading: true}))

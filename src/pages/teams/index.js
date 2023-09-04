@@ -25,6 +25,7 @@ import TeamAddForm from 'src/views/teams/TeamAddForm';
 
 import {useTeamSlice} from 'src/@core/store/teamStore';
 import {useUserStore} from 'src/@core/store/userStore';
+import useSWR from 'swr'
 
 const Teams = (params) => {
     
@@ -102,17 +103,13 @@ const Teams = (params) => {
         }
     }
     
-    useEffect(() => {
     
-        const data = {
-            token: token,
-            email: "",
-            role:"admin"
-        }
-        
-        setTeams(data);
-
-    }, [token,setTeams])
+    const payload = {
+        token: token,
+        email: "",
+        role:"admin"
+    }
+    const { data, error, isLoading  } = useSWR('/api/teams', setTeams(payload))
 
     const handleClose = () =>{
         if( add ){

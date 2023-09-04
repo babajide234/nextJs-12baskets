@@ -44,9 +44,9 @@ const NextofKinForm = ({ data }) => {
         updateNok({
             token,
             management: "Yes",
-            store_id: details.store_id.admin ? details.store_id.admin : '',
-            account_id:userId,
-            email: userId,
+            store_id: details.store_id.admin  ? details.store_id.admin : '',
+            account_id:details.email,
+            email: details.email,
             nok_lastname: values.nok_lastname,
             nok_othernames: values.nok_othernames,
             nok_phone: values.nok_phone,
